@@ -1,0 +1,17 @@
+# Dependencias de Node.js
+node_modules/
+
+# Variables de entorno y credenciales sensibles (¡CRÍTICO!)
+.env
+.env.local
+.env.*.local
+firebase-service-account.json
+*firebase-adminsdk*.json
+
+# Logs y archivos temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+casac-backend/firebase-service-account.json
