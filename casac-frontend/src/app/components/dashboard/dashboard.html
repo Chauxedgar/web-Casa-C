@@ -1,10 +1,12 @@
 <div class="dash-layout">
   <header class="topbar">
     <div class="brand">Casa C <span>· Finanzas Inteligentes</span></div>
-    <div class="user-actions">
+    <nav class="nav-links">
+      <a routerLink="/dashboard" class="nav-btn active">Nexo Advisor</a>
+      <a routerLink="/profile" class="nav-btn">Mi Perfil</a>
       <span class="user-email">{{ userEmail }}</span>
       <button class="btn-logout" (click)="onLogout()">Cerrar sesión</button>
-    </div>
+    </nav>
   </header>
 
   <main class="dash-content">
@@ -18,25 +20,25 @@
           rows="3"
           placeholder="Ej. Tengo un perfil moderado con horizonte de 5 a 10 años. ¿Qué distribución de activos me recomiendas?"
         ></textarea>
-        <button class="btn-ask" (click)="askNexo()" [disabled]="loading || !prompt.trim()">
-          {{ loading ? 'Analizando portafolio...' : 'Consultar a Nexo Advisor' }}
+        <button class="btn-ask" (click)="askNexo()" [disabled]="loading() || !prompt.trim()">
+          {{ loading() ? 'Analizando portafolio...' : 'Consultar a Nexo Advisor' }}
         </button>
       </div>
 
-      @if (error) {
-        <div class="error-msg">{{ error }}</div>
+      @if (error()) {
+        <div class="error-msg">{{ error() }}</div>
       }
 
-      @if (response) {
+      @if (response(); as res) {
         <div class="context-pills">
-          <span>Perfil: <strong>{{ response.contextoCartera.perfilRiesgo }}</strong></span>
-          <span>Nivel: <strong>{{ response.contextoCartera.nivelRiesgo }}</strong></span>
-          <span>Horizonte: <strong>{{ response.contextoCartera.horizontePrincipal }}</strong></span>
-          <span>Objetivo: <strong>{{ response.contextoCartera.objetivo }}</strong></span>
+          <span>Perfil: <strong>{{ res.contextoCartera.perfilRiesgo }}</strong></span>
+          <span>Nivel: <strong>{{ res.contextoCartera.nivelRiesgo }}</strong></span>
+          <span>Horizonte: <strong>{{ res.contextoCartera.horizontePrincipal }}</strong></span>
+          <span>Objetivo: <strong>{{ res.contextoCartera.objetivo }}</strong></span>
         </div>
 
         <div class="reply-box">
-          <pre>{{ response.reply }}</pre>
+          <pre>{{ res.reply }}</pre>
         </div>
       }
     </section>

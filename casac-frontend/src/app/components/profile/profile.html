@@ -1,0 +1,92 @@
+<div class="dash-layout">
+  <header class="topbar">
+    <div class="brand">Casa C <span>· Gestión de Usuario</span></div>
+    <nav class="nav-links">
+      <a routerLink="/dashboard" class="nav-btn">Nexo Advisor</a>
+      <a routerLink="/profile" class="nav-btn active">Mi Perfil</a>
+      <button class="btn-logout" (click)="onLogout()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main class="profile-content">
+    <section class="profile-card">
+      <h2>Perfil del Inversor</h2>
+      <p class="subtitle">Estos parámetros calibran las recomendaciones de portafolio de Nexo Advisor.</p>
+
+      @if (loading()) {
+        <div class="loading-box">Cargando datos desde Firestore...</div>
+      } @else {
+        <form (ngSubmit)="onSave()">
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="displayName">Nombre completo</label>
+              <input id="displayName" type="text" name="displayName" [(ngModel)]="profile.displayName" required />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Correo electrónico (solo lectura)</label>
+              <input id="email" type="email" name="email" [value]="profile.email" disabled />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="perfilRiesgo">Perfil de riesgo</label>
+              <select
+                id="perfilRiesgo"
+                name="perfilRiesgo"
+                [ngModel]="profile.perfilRiesgo"
+                (ngModelChange)="onRiskChange($event)"
+              >
+                <option value="Conservador">Conservador (Nivel 2/7)</option>
+                <option value="Moderado">Moderado (Nivel 4/7)</option>
+                <option value="Agresivo">Agresivo (Nivel 6/7)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="horizontePrincipal">Horizonte de inversión</label>
+              <select id="horizontePrincipal" name="horizontePrincipal" [(ngModel)]="profile.horizontePrincipal">
+                <option value="Corto plazo (< 2 años)">Corto plazo (menos de 2 años)</option>
+                <option value="2-5 años">Mediano plazo (2-5 años)</option>
+                <option value="5-10 años">Largo plazo (5-10 años)</option>
+                <option value="> 10 años">Patrimonial (más de 10 años)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="objetivo">Objetivo principal</label>
+              <select id="objetivo" name="objetivo" [(ngModel)]="profile.objetivo">
+                <option value="Preservación de capital">Preservación de capital</option>
+                <option value="Generación de renta">Generación de renta</option>
+                <option value="Crecimiento">Crecimiento</option>
+                <option value="Crecimiento agresivo">Crecimiento agresivo</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="capitalInicial">Capital base de referencia (USD)</label>
+              <input id="capitalInicial" type="number" name="capitalInicial" [(ngModel)]="profile.capitalInicial" min="0" />
+            </div>
+          </div>
+
+          @if (errorMessage()) {
+            <div class="error-banner">{{ errorMessage() }}</div>
+          }
+
+          @if (successMessage()) {
+            <div class="success-banner">{{ successMessage() }}</div>
+          }
+
+          <div class="actions-row">
+            <button type="submit" class="btn-save" [disabled]="saving()">
+              {{ saving() ? 'Guardando...' : 'Guardar perfil en Firestore' }}
+            </button>
+          </div>
+        </form>
+      }
+    </section>
+  </main>
+</div>
