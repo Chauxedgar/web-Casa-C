@@ -2,7 +2,7 @@ const { auth } = require('../config/firebase');
 
 // 1. Registro de usuarios (Sign Up)
 exports.registerUser = async (req, res) => {
-  const { email, password, displayName } = req.body;
+  const { email, password, displayName } = req.body||{};
 
   if (!email || !password) {
     return res.status(400).json({ error: 'El email y la contraseña son requeridos' });
@@ -12,7 +12,7 @@ exports.registerUser = async (req, res) => {
     const userRecord = await auth.createUser({
       email,
       password,
-      displayName: displayName || 'Usuario de Casa C',
+      displayName: displayName || 'Inversor Casa C',
     });
 
     res.status(201).json({
@@ -26,8 +26,49 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// 2. Verificación de Token para Rutas Protegidas (Como "Login" o "Dashboard")
-// El cliente se logueará en el frontend usando Firebase Client SDK, obtendrá un token y nos lo enviará para validar
+// 2. Inicio de sesión (Login) para obtener el ID Token (Bearer Token)
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body||{};
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'El email y la contraseña son requeridos' });
+  }
+
+  const apiKey = process.env.FIREBASE_WEB_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Falta configurar FIREBASE_WEB_API_KEY en el archivo .env' });
+  }
+
+  try {
+    const response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, returnSecureToken: true })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(401).json({ error: data.error?.message || 'Credenciales inválidas' });
+    }
+
+    res.status(200).json({
+      message: 'Inicio de sesión exitoso',
+      uid: data.localId,
+      email: data.email,
+      idToken: data.idToken,
+      expiresIn: data.expiresIn
+    });
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({ error: 'Error interno al iniciar sesión' });
+  }
+};
+
+// 3. Verificación de Token
 exports.verifyUserToken = async (req, res) => {
   const authHeader = req.headers.authorization;
 

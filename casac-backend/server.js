@@ -1,27 +1,32 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/authRoutes');
 
-// Cargar variables de entorno
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
-app.use(express.json()); // Permite recibir JSON en las peticiones
+app.use(express.json());
 
-// Rutas
+// Rutas de la API
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/ai', aiRoutes);
 
-// Ruta base
 app.get('/', (req, res) => {
-  res.send('Servidor de Casa C funcionando con Firebase Auth');
+  res.json({
+    status: 'online',
+    service: 'Casa C — Finanzas Inteligentes API',
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Levantar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor de Casa C corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Servidor de Casa C corriendo en http://localhost:${PORT}`);
 });
