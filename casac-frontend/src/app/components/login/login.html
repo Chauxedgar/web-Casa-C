@@ -1,0 +1,46 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="brand-header">
+      <h1>Casa C</h1>
+      <p>Finanzas Inteligentes · Acceso de Inversores</p>
+    </div>
+
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="duvy@gmail.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      @if (errorMessage) {
+        <div class="error-banner">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Verificando...' : 'Iniciar sesión' }}
+      </button>
+    </form>
+    <div class="switch-auth">
+        ¿Aún no tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+        
+    </div>
+  </div>
+</div>

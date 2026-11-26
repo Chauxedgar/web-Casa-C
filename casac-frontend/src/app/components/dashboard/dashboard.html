@@ -1,0 +1,44 @@
+<div class="dash-layout">
+  <header class="topbar">
+    <div class="brand">Casa C <span>· Finanzas Inteligentes</span></div>
+    <div class="user-actions">
+      <span class="user-email">{{ userEmail }}</span>
+      <button class="btn-logout" (click)="onLogout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="dash-content">
+    <section class="advisor-card">
+      <h2>Nexo Advisor · Asesoría Financiera IA</h2>
+      <p class="subtitle">Consulta estrategias de inversión calibradas a tu perfil de riesgo en Firestore.</p>
+
+      <div class="prompt-box">
+        <textarea
+          [(ngModel)]="prompt"
+          rows="3"
+          placeholder="Ej. Tengo un perfil moderado con horizonte de 5 a 10 años. ¿Qué distribución de activos me recomiendas?"
+        ></textarea>
+        <button class="btn-ask" (click)="askNexo()" [disabled]="loading || !prompt.trim()">
+          {{ loading ? 'Analizando portafolio...' : 'Consultar a Nexo Advisor' }}
+        </button>
+      </div>
+
+      @if (error) {
+        <div class="error-msg">{{ error }}</div>
+      }
+
+      @if (response) {
+        <div class="context-pills">
+          <span>Perfil: <strong>{{ response.contextoCartera.perfilRiesgo }}</strong></span>
+          <span>Nivel: <strong>{{ response.contextoCartera.nivelRiesgo }}</strong></span>
+          <span>Horizonte: <strong>{{ response.contextoCartera.horizontePrincipal }}</strong></span>
+          <span>Objetivo: <strong>{{ response.contextoCartera.objetivo }}</strong></span>
+        </div>
+
+        <div class="reply-box">
+          <pre>{{ response.reply }}</pre>
+        </div>
+      }
+    </section>
+  </main>
+</div>
